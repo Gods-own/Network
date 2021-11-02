@@ -1,0 +1,49 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <div class="allposts-div">
+        <!-- The card containing a post -->
+        {% for post in page_obj.object_list %}
+        <article class="post-card">
+            <div class="post-card-body">
+                <div class="card-user-image">
+                    <img class="user-image" src={{post.poster.userImage}}>
+                </div>
+                <div class="card-body-post">
+                    <h2><a href="{% url 'person' post.poster.id %}">{{post.poster}}</a></h2>
+                    <p><a href="{% url 'comments' post.id %}">{{post.post}}</a></p>
+                    {% if post.picture != None %}
+                    <img src={{post.picture}}>
+                    {% endif %}
+                    <div class="icons-div">
+                        <a class="like-buttons" data-id={{post.id}}>
+                            <button data-id="{{post.id}}colored" class="colored-heart btn-icon"><i class="las la-heart" aria-hidden="true"></i></button>
+                            <button data-id="{{post.id}}uncolored" class="uncolored-heart btn-icon"><i class="lar la-heart"></i></button>
+                            <small id="like{{post.id}}" class="show-like">{{post.like}}</small>
+                        </a>
+                        <a>
+                            <button class="btn-icon"><i class="las la-comment-alt"></i></button>
+                            <small>{{post.nocomments}}</small>
+                        </a>
+                    </div>
+                    <small class="timestamp">{{post.timestamp}}</small>
+                </div>
+            </div>
+        </article>
+        {% endfor %}
+    
+    <!-- The paginator div -->
+    {% if page_obj.object_list|length > 0 %}
+    <div class="paginator">
+        {% if page_obj.has_previous %}
+    <button><a href="?page={{page_obj.previous_page_number}}">Previous</a></button>
+    {% endif %}
+    <span>Page {{page_obj.number}}</span>
+    {% if page_obj.has_next %}
+    <button><a href="?page={{page_obj.next_page_number}}">Next</a></button>
+    {% endif %}
+    </div>
+    {% endif %}
+
+    </div>
+{% endblock %}

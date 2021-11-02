@@ -1,0 +1,30 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+<div class="allposts-div">
+
+    <!-- The create post form  -->
+    <div class="add-form">
+        <form method="post" action="{% url 'addPost' %}">
+            {% csrf_token %}
+            <div class="form-btn">
+                <button class="purple-btn" type="submit">Post</button>
+                <button class="image-icon" type="button"><i class="las la-image"></i></button>
+            </div>
+            <div class="input-div">
+                {{form1}}
+            </div>
+            <div class="input-div image-form">
+                {{form2}}
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    document.querySelector('.image-icon').addEventListener('click', function() {
+        document.querySelector('.image-form').classList.toggle('show');
+    })
+</script>
+{% endblock %}

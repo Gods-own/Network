@@ -1,0 +1,107 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+    <div class="allposts-div">
+        
+        <!-- The profile header div -->
+        <div class="profile-header">
+            <div class="user-info">
+                <div class="info-header">
+                    <img src={{user.userImage}}>
+                </div>
+                <div class="info-posts">
+                    <h1>{{user.username}}</h1>
+            <small class="follo1">{{numbers.nofollowing}} Following</small>
+            {% if numbers.nofollowers > 1 %}
+            <small class="follo2">{{numbers.nofollowers}} Followers</small>
+            {% else %}
+            <small class="follo2">{{numbers.nofollowers}} Follower</small>
+            {% endif %}
+                </div>
+            </div>
+            {% if user.username != request.user|stringformat:"s" %}
+            {% if is_following == True %}
+            <button class="followbtn purple-btn"><a href="{% url 'unfollow' user.id %}">Unfollow</a></button>
+            {% else %}
+            <button class="followbtn purple-btn"><a href="{% url 'follow' user.id %}">Follow</a></button>
+            {% endif %}
+             {% endif %}
+        </div>
+    
+        <hr>
+    
+       <div class="person-posts">
+
+            {% for post in page_obj.object_list %}
+
+            <!-- The card containing a post and edit form (the edit form has a display of none) -->
+            <article class="post-card">
+                <div class="card-body-post" data-id="card{{post.id}}">
+                    <p><a href="{% url 'comments' post.id %}" data-id="{{post.id}}post">{{post.post}}</a></p>
+                    {% if post.picture != None %}
+                    <img data-id="{{post.id}}image" src="{{post.picture}}">
+                    {% endif %}
+                    <div class="icons-div">
+                        <a class="like-buttons" data-id={{post.id}}>
+                            <button data-id="{{post.id}}colored" class="colored-heart btn-icon"><i class="las la-heart" aria-hidden="true"></i></button>
+                            <button data-id="{{post.id}}uncolored" class="uncolored-heart btn-icon"><i class="lar la-heart"></i></button>
+                            <small id="like{{post.id}}" class="show-like">{{post.like}}</small>
+                        </a>
+                        <a>
+                            <button class="btn-icon"><i class="las la-comment-alt"></i></button>
+                            <small>{{post.nocomments}}</small>
+                        </a>
+                    </div>
+                    <small class="timestamp">{{post.timestamp}}</small>
+                    {% if post.poster|stringformat:"s" == request.user|stringformat:"s" %}
+                    <button data-id="{{post.id}}edit" class="edit"><a>Edit</a></button>
+                    {% endif %}
+                </div>
+                    
+                <!-- The edit form -->
+                <form class="editform" data-id="form{{post.id}}">
+                    <div class="form-btn">
+                        <button class="purple-btn" type="submit">Post</button>
+                        <button class="image-icon" type="button" data-id="image-icon{{post.id}}"><i class="las la-image"></i></button>
+                    </div>
+                    <div class="input-div">
+                        <textarea class="inputs" id="input1" data-id="text{{post.id}}" required>{{post.post}}</textarea>
+                    </div>
+                    <div class="input-div image-form" data-id="image-form{{post.id}}">
+                        {% if post.picture != None %}
+                        <input class="inputs" id="input2" data-id="image{{post.id}}" value="{{post.picture}}">
+                        {% else %}
+                        <input class="inputs" id="input2" data-id="image{{post.id}}">
+                        {% endif %}
+                    </div>
+                </form>
+        
+            </article>
+            {% endfor %}
+        </div>
+
+       <!-- The paginator div -->
+      
+       {% if page_obj.object_list|length > 0 %}
+        <div class="paginator">
+            {% if page_obj.has_previous %}
+        <button><a href="?page={{page_obj.previous_page_number}}">Previous</a></button>
+        {% endif %}
+        <span>Page {{page_obj.number}}</span>
+        {% if page_obj.has_next %}
+        <button><a href="?page={{page_obj.next_page_number}}">Next</a></button>
+        {% endif %}
+        </div>
+        {% endif %}
+        
+    </div>
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'network/edit.js' %}" type="text/javascript"></script>
+{% endblock %}
+
+
+
